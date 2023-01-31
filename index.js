@@ -293,6 +293,7 @@ const app = {
     // Render playlist
     this.render();
 
+    // Render config ra giao diện khi load ứng dụng
     randomBtn.classList.toggle("active", this.isRandom);
     repeatBtn.classList.toggle("active", this.isRepeat);
   },
