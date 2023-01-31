@@ -15,10 +15,13 @@ const cdThumb = $(".cd-thumb");
 const prevBtn = $(".btn-prev");
 const nextBtn = $(".btn-next");
 const randomBtn = $(".btn-random");
+const repeatBtn = $(".btn-repeat");
 
 const app = {
   currentIndex: 0,
   isPlaying: false,
+  isRandom: false,
+  isRepeat: false,
   songs: [
     {
       name: "Nandemonaiya",
@@ -65,8 +68,8 @@ const app = {
   ],
 
   render: function () {
-    const htmls = app.songs.map((song) => {
-      return `<div class="song">
+    const htmls = app.songs.map((song, index) => {
+      return `<div class="song ${this.currentIndex === index ? "active" : ""}">
                 <div
                   class="thumb"
                   style="background-image: url('${song.image}')"></div>
@@ -105,48 +108,81 @@ const app = {
       } else {
         audio.play();
       }
+    };
 
-      // Xử lý khi bài hát được play
-      audio.onplay = () => {
-        this.isPlaying = true;
-        player.classList.add("playing");
-        cdThumbAnimation.play();
-      };
+    // Xử lý khi bài hát được play
+    audio.onplay = () => {
+      this.isPlaying = true;
+      player.classList.add("playing");
+      cdThumbAnimation.play();
+    };
 
-      // Xử lý khi bài hát bị pause
-      audio.onpause = () => {
-        this.isPlaying = false;
-        player.classList.remove("playing");
-        cdThumbAnimation.pause();
-      };
+    // Xử lý khi bài hát bị pause
+    audio.onpause = () => {
+      this.isPlaying = false;
+      player.classList.remove("playing");
+      cdThumbAnimation.pause();
+    };
 
-      // Xử lý khi tiến độ bài hát thay đổi
-      audio.ontimeupdate = () => {
-        if (audio.duration) {
-          const progressPercent = Math.floor(
-            (audio.currentTime / audio.duration) * 100
-          );
-          progress.value = progressPercent;
-        }
-      };
+    // Xử lý khi tiến độ bài hát thay đổi
+    audio.ontimeupdate = () => {
+      if (audio.duration) {
+        const progressPercent = Math.floor(
+          (audio.currentTime / audio.duration) * 100
+        );
+        progress.value = progressPercent;
+      }
+    };
 
-      // Xử lý khi tua bài hát
-      progress.onchange = (e) => {
-        const seekTime = (audio.duration / 100) * e.target.value;
-        audio.currentTime = seekTime;
-      };
+    // Xử lý khi tua bài hát
+    progress.onchange = (e) => {
+      const seekTime = (audio.duration / 100) * e.target.value;
+      audio.currentTime = seekTime;
+    };
 
-      // Khi previous bài hát
-      prevBtn.onclick = () => {
+    // Khi bấm previous bài hát
+    prevBtn.onclick = () => {
+      if (this.isRandom) {
+        this.playRandomSong();
+      } else {
         this.prevSong();
-        audio.play();
-      };
+      }
+      audio.play();
+      this.render();
+      this.scrollToActiveSong();
+    };
 
-      // Khi next bài hát
-      nextBtn.onclick = () => {
+    // Khi bấm next bài hát
+    nextBtn.onclick = () => {
+      if (this.isRandom) {
+        this.playRandomSong();
+      } else {
         this.nextSong();
+      }
+      audio.play();
+      this.render();
+      this.scrollToActiveSong();
+    };
+
+    // Xử lý khi bấm on / off random
+    randomBtn.onclick = () => {
+      this.isRandom = !this.isRandom;
+      randomBtn.classList.toggle("active", this.isRandom);
+    };
+
+    // Xử lý repeat bài hát khi bấm on /off repeat
+    repeatBtn.onclick = () => {
+      this.isRepeat = !this.isRepeat;
+      repeatBtn.classList.toggle("active", this.isRepeat);
+    };
+
+    // Xử lý next bài hát khi audio ended
+    audio.onended = () => {
+      if (this.isRepeat) {
         audio.play();
-      };
+      } else {
+        nextBtn.click();
+      }
     };
   },
 
@@ -158,11 +194,19 @@ const app = {
     });
   },
 
+  scrollToActiveSong: function () {
+    setTimeout(() => {
+      $(".song.active").scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 300);
+  },
+
   loadCurrentSong: function () {
     heading.textContent = this.currentSong.name;
     cdThumb.style.backgroundImage = `url('${this.currentSong.image}')`;
     audio.src = this.currentSong.path;
-    console.log(audio.src);
   },
 
   prevSong: function () {
@@ -178,6 +222,15 @@ const app = {
     if (this.currentIndex >= this.songs.length) {
       this.currentIndex = 0;
     }
+    this.loadCurrentSong();
+  },
+
+  playRandomSong: function () {
+    let newIndex;
+    do {
+      newIndex = Math.floor(Math.random() * this.songs.length);
+    } while (newIndex == this.currentIndex);
+    this.currentIndex = newIndex;
     this.loadCurrentSong();
   },
 
