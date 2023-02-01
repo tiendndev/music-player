@@ -152,7 +152,7 @@ const app = {
     };
 
     // Xử lý khi tua bài hát
-    progress.onchange = (e) => {
+    progress.oninput = (e) => {
       const seekTime = (audio.duration / 100) * e.target.value;
       audio.currentTime = seekTime;
     };
