@@ -138,20 +138,30 @@ header h2 {
 .song {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 12px;
   padding: 8px 16px;
   border-radius: 5px;
   background-color: #f5f5f5;
-
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.song.active {
-  background-color: var(--primary-color);
+.song .info {
+  display: flex;
+  width: 100%;
+}
+
+.song:hover {
+  transform: scale(105%);
+  transition: all 0.2s linear;
 }
 
 .song:active {
   opacity: 0.7;
+}
+
+.song.active {
+  background-color: var(--primary-color);
 }
 
 .song.active .option,

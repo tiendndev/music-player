@@ -84,13 +84,15 @@ const app = {
               <div 
                   class="song ${this.currentIndex === index ? "active" : ""}" 
                   data-index="${index}">
-                <div 
-                  class="thumb" 
-                  style="background-image: url('${song.image}')">
-                </div>
-                <div class="body">
-                  <h3 class="title">${song.name}</h3>
-                  <p class="author">${song.singer}</p>
+                <div class="info">
+                    <div 
+                      class="thumb" 
+                      style="background-image: url('${song.image}')">
+                    </div>
+                    <div class="body">
+                      <h3 class="title">${song.name}</h3>
+                      <p class="author">${song.singer}</p>
+                    </div>
                 </div>
                 <div class="option">
                   <i class="fas fa-ellipsis-h"></i>
@@ -205,7 +207,7 @@ const app = {
     // Lắng nghe hành vi Click vào playlist
     playlist.onclick = (e) => {
       const songElement = e.target.closest(".song:not(.active)");
-      if (songElement || e.target.closest(".option")) {
+      if (songElement && !e.target.closest(".option")) {
         // Xử lý khi click vào bài hát trên playlist
         if (songElement) {
           this.currentIndex = Number(songElement.dataset.index);
@@ -216,6 +218,7 @@ const app = {
 
         // Xử lý khi click vào option
         if (e.target.closest(".option")) {
+          console.log(123);
         }
       }
     };
