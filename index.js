@@ -84,17 +84,14 @@ const app = {
               <div 
                   class="song ${this.currentIndex === index ? "active" : ""}" 
                   data-index="${index}">
-
                 <div 
                   class="thumb" 
                   style="background-image: url('${song.image}')">
                 </div>
-
                 <div class="body">
                   <h3 class="title">${song.name}</h3>
                   <p class="author">${song.singer}</p>
                 </div>
-
                 <div class="option">
                   <i class="fas fa-ellipsis-h"></i>
                 </div>
