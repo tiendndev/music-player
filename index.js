@@ -26,7 +26,7 @@ const app = {
   isPlaying: false,
   isRandom: false,
   isRepeat: false,
-  config: JSON.parse(localStorage.getItem("TIEN_PLAYER")) || {},
+  config: JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY)) || {},
   songs: [
     {
       name: "Nandemonaiya",
@@ -74,7 +74,7 @@ const app = {
 
   setConfig: function (key, value) {
     this.config[key] = value;
-    localStorage.setItem("TIEN_PLAYER", JSON.stringify(this.config));
+    localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(this.config));
     // console.log(this.config);
   },
 
